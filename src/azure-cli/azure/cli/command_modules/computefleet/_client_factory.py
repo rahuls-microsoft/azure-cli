@@ -6,7 +6,8 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
-from azure.mgmt.compute import ComputeManagementClient
+#from azure.mgmt.compute import ComputeManagementClient
+from azure.cli.core.profiles import ResourceType
 
 def cf_computefleet(cli_ctx, *_):
-    return get_mgmt_service_client(cli_ctx, ComputeManagementClient)
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_COMPUTEFLEET)

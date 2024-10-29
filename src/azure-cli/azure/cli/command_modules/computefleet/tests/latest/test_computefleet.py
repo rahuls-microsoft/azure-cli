@@ -54,7 +54,7 @@ fleet_name = generate_random_fleet_name(fleet_name)
 fleet_name_regular = generate_random_fleet_name(fleet_name_regular)
 fleet_name_spot = generate_random_fleet_name(fleet_name_spot)
 resource_group = generate_random_rg_name()
-location = "eastus"
+location = "westus2"
 
 class TestComputefleetScenario(ScenarioTest):
 

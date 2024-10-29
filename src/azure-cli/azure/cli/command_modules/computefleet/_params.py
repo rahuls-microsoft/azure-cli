@@ -8,6 +8,10 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
+from knack.arguments import CLIArgumentType
+from azure.cli.core.commands.parameters import name_type, resource_group_name_type
 
-def load_arguments(self, _):  # pylint: disable=unused-argument
-    pass
+def load_arguments(self, _):
+    with self.argument_context('computefleet') as c:
+        c.argument('resource_group', resource_group_name_type)
+        c.argument('fleet_name', name_type, help='Name of the compute fleet.')
