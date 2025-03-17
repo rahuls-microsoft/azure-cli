@@ -17,8 +17,6 @@ from azure.cli.core.aaz import *
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage for Azure Compute Fleet
-
-    Operations for Azure Compute Fleet
     """
     pass
 

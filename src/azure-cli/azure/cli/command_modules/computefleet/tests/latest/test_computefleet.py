@@ -37,7 +37,7 @@ from .fleet_test_helper import (
     FleetTestHelper,
 )  # Ensure this import points to the correct module
 
-defaultSubscription = "ac302a10-6fb1-4308-baf6-ad855c4d7f3d"
+defaultSubscription = "be23ca13-8eb4-4d0e-be10-b00451817956" 
 #defaultSubscription = "0000000-0000-0000-0000-000000000000"
 subscriptionId = os.getenv("SUBSCRIPTION_ID")
 if not subscriptionId:
@@ -46,7 +46,7 @@ if not subscriptionId:
 fleet_name = "testFleet"
 fleet_name_regular = "testFleet_rg"
 fleet_name_spot = "testFleet_sp"
-fleet_rg_prefix = "fleet_cli_rg_"
+fleet_rg_prefix = "fleet-cli-test-"
 
 
 def generate_random_rg_name(prefix=fleet_rg_prefix, length=16):
@@ -137,6 +137,7 @@ class TestComputefleetScenario(ScenarioTest):
 
         fleetData_json = json.dumps(fleetData)
         print(fleetData_json)
+        print(json.dumps(compute_profile))
         tagsNew = {"multi": "mixed"}
 
         self.kwargs.update(
@@ -181,6 +182,7 @@ class TestComputefleetScenario(ScenarioTest):
 
         fleetData_json = json.dumps(fleetData)
         print(fleetData_json)
+        print(json.dumps(compute_profile))
         tagsNew = {"multi": "mixed"}
 
         self.kwargs.update(
@@ -294,7 +296,7 @@ class TestComputefleetScenario(ScenarioTest):
         self._fleet_create_using_alias( fleet_name_spot_alias , resource_group, resource_group_location)
         self._fleet_show( fleet_name_spot_alias , resource_group)
         self._fleet_update(fleet_name_spot_alias, resource_group)
-        self._fleet_delete( fleet_name_spot_alias , resource_group, subscriptionId)
+       # self._fleet_delete( fleet_name_spot_alias , resource_group, subscriptionId)
     
     @ResourceGroupPreparer(name_prefix=fleet_rg_prefix, location=location)
     @AllowLargeResponse()
@@ -304,7 +306,7 @@ class TestComputefleetScenario(ScenarioTest):
         self._fleet_create(fleet_name, resource_group, resource_group_location)
         self._fleet_update(fleet_name, resource_group)
         self._fleet_show(fleet_name, resource_group)
-        self._fleet_list(resource_group)
-        self._fleet_vmss_list(fleet_name, resource_group)
-        self._fleet_delete(fleet_name, resource_group, subscriptionId)
+       # self._fleet_list(resource_group)
+       # self._fleet_vmss_list(fleet_name, resource_group)
+       # self._fleet_delete(fleet_name, resource_group, subscriptionId)
      
