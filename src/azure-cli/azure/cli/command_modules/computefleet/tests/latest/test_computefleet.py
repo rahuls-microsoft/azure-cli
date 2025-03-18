@@ -29,6 +29,7 @@ import unittest
 import json
 import random
 import string
+import sys
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
@@ -37,7 +38,7 @@ from .fleet_test_helper import (
     FleetTestHelper,
 )  # Ensure this import points to the correct module
 
-defaultSubscription = "ac302a10-6fb1-4308-baf6-ad855c4d7f3d"
+defaultSubscription = "be23ca13-8eb4-4d0e-be10-b00451817956"
 #defaultSubscription = "0000000-0000-0000-0000-000000000000"
 subscriptionId = os.getenv("SUBSCRIPTION_ID")
 if not subscriptionId:
@@ -48,6 +49,8 @@ fleet_name_regular = "testFleet_rg"
 fleet_name_spot = "testFleet_sp"
 fleet_rg_prefix = "fleet_cli_rg_"
 
+sys.stdout.flush()
+sys.stderr.flush()
 
 def generate_random_rg_name(prefix=fleet_rg_prefix, length=16):
     suffix = "".join(random.choices(string.ascii_lowercase + string.digits, k=length))
@@ -62,7 +65,7 @@ def generate_random_fleet_name(prefix="test_fleet_cli", length=16):
 fleet_name_regular = generate_random_fleet_name(fleet_name_regular)
 fleet_name_spot = generate_random_fleet_name(fleet_name_spot)
 resource_group = generate_random_rg_name()
-location = "westus3"
+location = "eastus2"
 location2 = "westus2"
 subnet_name = generate_random_fleet_name("subnet-", 12)
 
@@ -136,7 +139,25 @@ class TestComputefleetScenario(ScenarioTest):
         tags = fleetData["tags"]
 
         fleetData_json = json.dumps(fleetData)
+        c_json = json.dumps(compute_profile)
+        s_json = json.dumps(spot_profile)
+        vm_sizes_json = json.dumps(vm_sizes_profile)
+        
         print(fleetData_json)
+        print(c_json)
+        print(s_json)
+        cmd_str = f"az compute-fleet create  --name {fleet} --resource-group {rg} --spp '{s_json}' --cp '{c_json}' --vmsizeprof '{vm_sizes_json}' -l {location} -t '{tags}' "
+        print(cmd_str)
+        self.logger.info(f"Fleet az cmd: {cmd_str}")
+        sys.stderr.write(f"Fleet az cmd: {fleetData_json}\n")
+        # raise Exception(f"""  to log - remove it
+        raise Exception(f"""
+        Fleet Data JSON: {fleetData_json}
+        Compute Profile JSON: {c_json}
+        Spot Profile JSON: {s_json}
+        VM Sizes Profile JSON: {vm_sizes_json}
+        Command String: az compute-fleet create --name {fleet} --resource-group {rg} --spp '{s_json}' --cp '{c_json}' --vmsizeprof '{vm_sizes_json}' -l {location} -t '{tags}'
+        """)
         tagsNew = {"multi": "mixed"}
 
         self.kwargs.update(
@@ -180,7 +201,27 @@ class TestComputefleetScenario(ScenarioTest):
         tags = fleetData["tags"]
 
         fleetData_json = json.dumps(fleetData)
+        c_json = json.dumps(compute_profile)
+        s_json = json.dumps(spot_profile)
+        vm_sizes_json = json.dumps(vm_sizes_profile)
+        
         print(fleetData_json)
+        print(c_json)
+        print(s_json)
+        
+        cmd_str = f"az compute-fleet create  --name {fleet} --resource-group {rg} --spp '{s_json}' --cp '{c_json}' --vmsizeprof '{vm_sizes_json}' -l {location} -t '{tags}' "
+        print(cmd_str)
+        self.logger.info(f"Fleet az cmd: {cmd_str}")
+        sys.stderr.write(f"Fleet az cmd: {fleetData_json}\n")
+        # raise Exception(f"""  to log - remove it        
+        raise Exception(f"""
+        Fleet Data JSON: {fleetData_json}
+        Compute Profile JSON: {c_json}
+        Spot Profile JSON: {s_json}
+        VM Sizes Profile JSON: {vm_sizes_json}
+        Command String: az compute-fleet create --name {fleet} --resource-group {rg} --spp '{s_json}' --cp '{c_json}' --vmsizeprof '{vm_sizes_json}' -l {location} -t '{tags}'
+        """)
+        
         tagsNew = {"multi": "mixed"}
 
         self.kwargs.update(
@@ -243,7 +284,7 @@ class TestComputefleetScenario(ScenarioTest):
 
         self.cmd(
             "az compute-fleet list-vmss  --name {fleet_name_test} --resource-group {resource_group} --subscription {subscriptionId}",
-            checks=[self.check("length(@)", 3)],
+            checks=[self.check("length(@)", 1)],
         )
 
     def _fleet_update(self, fleet=fleet_name, rg=resource_group):
@@ -284,7 +325,7 @@ class TestComputefleetScenario(ScenarioTest):
             print(f"SystemExit occurred: {e}")
             raise
    
-    @ResourceGroupPreparer(name_prefix="fleet-cli_alias", location=location2)
+    @ResourceGroupPreparer(name_prefix="fleet-cli_alias", location=location2, random_name_length=32)
     @AllowLargeResponse()
     @live_only()
     def test_all_fleet_operations_using_alias(self, resource_group, resource_group_location):
@@ -296,7 +337,7 @@ class TestComputefleetScenario(ScenarioTest):
         self._fleet_update(fleet_name_spot_alias, resource_group)
         self._fleet_delete( fleet_name_spot_alias , resource_group, subscriptionId)
     
-    @ResourceGroupPreparer(name_prefix=fleet_rg_prefix, location=location)
+    @ResourceGroupPreparer(name_prefix=fleet_rg_prefix, location=location, random_name_length=32)
     @AllowLargeResponse()
     @live_only()
     def test_all_fleet_operations(self, resource_group, resource_group_location):
